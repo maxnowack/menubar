@@ -57,6 +57,7 @@ module.exports = function create (opts) {
     menubar.showWindow = opts.showWindow || showWindow
     menubar.hideWindow = opts.hideWindow || hideWindow
     menubar.createWindow = createWindow
+    menubar.positionWindow = positionWindow
 
     if (opts.preloadWindow) {
       menubar.createWindow()
@@ -68,7 +69,7 @@ module.exports = function create (opts) {
       if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return menubar.hideWindow()
       if (menubar.window && menubar.window.isVisible()) return menubar.hideWindow()
       cachedBounds = bounds || cachedBounds
-      showWindow(cachedBounds)
+      menubar.positionWindow(cachedBounds)
     }
 
     function createWindow () {
@@ -98,13 +99,7 @@ module.exports = function create (opts) {
       menubar.emit('after-create-window')
     }
 
-    function showWindow (trayPos) {
-      if (!menubar.window) {
-        menubar.createWindow()
-      }
-
-      menubar.emit('show')
-
+    function positionWindow(trayPos) {
       if (trayPos && trayPos.x !== 0) {
         // Cache the bounds
         cachedBounds = trayPos
@@ -125,6 +120,15 @@ module.exports = function create (opts) {
       var y = (opts.y !== undefined) ? opts.y : position.y
 
       menubar.window.setPosition(x, y)
+    }
+
+    function showWindow (trayPos) {
+      if (!menubar.window) {
+        menubar.createWindow()
+      }
+
+      menubar.emit('show')
+      menubar.positionWindow(trayPos)
       menubar.window.show()
       menubar.emit('after-show')
       return
