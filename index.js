@@ -57,6 +57,7 @@ module.exports = function create (opts) {
     menubar.hideWindow = opts.hideWindow || hideWindow
     menubar.createWindow = createWindow
     menubar.positionWindow = positionWindow
+    menubar.clickTray = clickTray
 
     if (opts.preloadWindow) {
       menubar.createWindow()
@@ -65,6 +66,10 @@ module.exports = function create (opts) {
     menubar.emit('ready')
 
     function clicked (e, bounds) {
+      menubar.clickTray(e, bounds)
+    }
+
+    function clickTray(e, bounds) {
       if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return menubar.hideWindow()
       if (menubar.window && menubar.window.isVisible()) return menubar.hideWindow()
       menubar.cachedBounds = bounds || menubar.cachedBounds
