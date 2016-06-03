@@ -58,13 +58,13 @@ module.exports = function create (opts) {
       createWindow()
     }
 
-    menubar.showWindow = showWindow
-    menubar.hideWindow = hideWindow
+    menubar.showWindow = opts.showWindow || showWindow
+    menubar.hideWindow = opts.hideWindow || hideWindow
     menubar.emit('ready')
 
     function clicked (e, bounds) {
-      if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return hideWindow()
-      if (menubar.window && menubar.window.isVisible()) return hideWindow()
+      if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return menubar.hideWindow()
+      if (menubar.window && menubar.window.isVisible()) return menubar.hideWindow()
       cachedBounds = bounds || cachedBounds
       showWindow(cachedBounds)
     }
@@ -82,7 +82,7 @@ module.exports = function create (opts) {
       menubar.positioner = new Positioner(menubar.window)
 
       if (!opts.alwaysOnTop) {
-        menubar.window.on('blur', hideWindow)
+        menubar.window.on('blur', menubar.hideWindow)
       } else {
         menubar.window.on('blur', emitBlur)
       }
