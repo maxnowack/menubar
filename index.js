@@ -54,12 +54,14 @@ module.exports = function create (opts) {
     menubar.tray.on('double-click', clicked)
     menubar.tray.setToolTip(opts.tooltip)
 
-    if (opts.preloadWindow) {
-      createWindow()
-    }
-
     menubar.showWindow = opts.showWindow || showWindow
     menubar.hideWindow = opts.hideWindow || hideWindow
+    menubar.createWindow = createWindow
+
+    if (opts.preloadWindow) {
+      menubar.createWindow()
+    }
+
     menubar.emit('ready')
 
     function clicked (e, bounds) {
@@ -98,7 +100,7 @@ module.exports = function create (opts) {
 
     function showWindow (trayPos) {
       if (!menubar.window) {
-        createWindow()
+        menubar.createWindow()
       }
 
       menubar.emit('show')
