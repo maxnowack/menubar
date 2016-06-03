@@ -46,7 +46,6 @@ module.exports = function create (opts) {
     var iconPath = opts.icon || path.join(opts.dir, 'IconTemplate.png')
     if (!fs.existsSync(iconPath)) iconPath = path.join(__dirname, 'example', 'IconTemplate.png') // default cat icon
 
-    var cachedBounds // cachedBounds are needed for double-clicked event
     var defaultClickEvent = opts.showOnRightClick ? 'right-click' : 'click'
 
     menubar.tray = opts.tray || new Tray(iconPath)
@@ -68,8 +67,8 @@ module.exports = function create (opts) {
     function clicked (e, bounds) {
       if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return menubar.hideWindow()
       if (menubar.window && menubar.window.isVisible()) return menubar.hideWindow()
-      cachedBounds = bounds || cachedBounds
-      menubar.positionWindow(cachedBounds)
+      menubar.cachedBounds = bounds || menubar.cachedBounds
+      menubar.positionWindow(menubar.cachedBounds)
     }
 
     function createWindow () {
@@ -102,10 +101,10 @@ module.exports = function create (opts) {
     function positionWindow(trayPos) {
       if (trayPos && trayPos.x !== 0) {
         // Cache the bounds
-        cachedBounds = trayPos
-      } else if (cachedBounds) {
+        menubar.cachedBounds = trayPos
+      } else if (menubar.cachedBounds) {
         // Cached value will be used if showWindow is called without bounds data
-        trayPos = cachedBounds
+        trayPos = menubar.cachedBounds
       }
 
       // Default the window to the right if `trayPos` bounds are undefined or null.
