@@ -68,7 +68,7 @@ module.exports = function create (opts) {
       if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return menubar.hideWindow()
       if (menubar.window && menubar.window.isVisible()) return menubar.hideWindow()
       menubar.cachedBounds = bounds || menubar.cachedBounds
-      menubar.positionWindow(menubar.cachedBounds)
+      menubar.showWindow(menubar.cachedBounds)
     }
 
     function createWindow () {
